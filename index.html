@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>情報工学研究部</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      body {
+        background-color: #0a192f;
+        color: #e6f1ff;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        padding: 20px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        background-color: rgba(10, 25, 47, 0.9);
+        z-index: 100;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #64ffda;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo::before {
+        content: "<";
+        opacity: 0.7;
+      }
+
+      .logo::after {
+        content: "/>";
+        opacity: 0.7;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+
+      .nav-links a {
+        color: #ccd6f6;
+        text-decoration: none;
+        font-size: 16px;
+        transition: all 0.3s;
+        padding: 8px 16px;
+        border-radius: 4px;
+        position: relative;
+      }
+
+      .nav-links a::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: #64ffda;
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:hover::before {
+        width: 100%;
+      }
+
+      .nav-links a:hover {
+        color: #64ffda;
+        background: rgba(100, 255, 218, 0.1);
+      }
+
+      .hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        padding-top: 80px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      #hero-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+
+      .hero-content {
+        max-width: 800px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero h1 {
+        font-size: 72px;
+        margin-bottom: 20px;
+        color: #ccd6f6;
+        line-height: 1.1;
+        font-weight: 800;
+        background: linear-gradient(45deg, #64ffda, #0a192f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .hero p {
+        font-size: 20px;
+        color: #8892b0;
+        margin-bottom: 30px;
+        line-height: 1.5;
+        max-width: 600px;
+      }
+
+      .section {
+        padding: 100px 0;
+        position: relative;
+      }
+
+      .section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1px;
+        height: 100%;
+        background: linear-gradient(to bottom, transparent, #64ffda, transparent);
+        opacity: 0.2;
+      }
+
+      .section h2 {
+        font-size: 32px;
+        margin-bottom: 40px;
+        color: #ccd6f6;
+        text-align: center;
+        position: relative;
+      }
+
+      .section h2::after {
+        content: "";
+        display: block;
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, transparent, #64ffda, transparent);
+        margin: 20px auto;
+      }
+
+      .teams {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 100px;
+      }
+
+      .team {
+        display: flex;
+        align-items: center;
+        gap: 60px;
+        position: relative;
+        padding: 40px;
+        background: rgba(17, 34, 64, 0.5);
+        border-radius: 20px;
+        border: 1px solid rgba(100, 255, 218, 0.1);
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .team:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(100, 255, 218, 0.1);
+      }
+
+      .team:nth-child(even) {
+        flex-direction: row-reverse;
+      }
+
+      .team-image {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        height: 400px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .team-image::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(100, 255, 218, 0.2), transparent);
+        z-index: 1;
+      }
+
+      .team-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .team:hover .team-image img {
+        transform: scale(1.05);
+      }
+
+      .team-content {
+        flex: 1;
+      }
+
+      .team h3 {
+        font-size: 28px;
+        color: #64ffda;
+        margin-bottom: 20px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .team h3::before {
+        content: ">";
+        margin-right: 10px;
+        opacity: 0.7;
+      }
+
+      .team p {
+        color: #8892b0;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .team-tech {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      .team-details {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      .team-details h4 {
+        color: #ccd6f6;
+        font-size: 16px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .team-details h4 svg {
+        width: 18px;
+        height: 18px;
+        opacity: 0.8;
+      }
+
+      .team-details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        font-size: 14px;
+        color: #8892b0;
+      }
+
+      .detail-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .detail-item svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        margin-top: -1px;
+        color: #64ffda;
+      }
+
+      .tech-tag {
+        background: rgba(100, 255, 218, 0.1);
+        color: #64ffda;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(100, 255, 218, 0.2);
+      }
+
+      .tech-tag:hover {
+        background: rgba(100, 255, 218, 0.2);
+        transform: translateY(-2px);
+      }
+      .join-us {
+        background: linear-gradient(180deg, #0a192f, #112240);
+        padding: 120px 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .join-us::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2364ffda' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      }
+
+      .join-section-header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .join-section-header p {
+        color: #8892b0;
+        font-size: 18px;
+        max-width: 600px;
+        margin: 20px auto;
+        line-height: 1.6;
+      }
+
+      .join-timeline {
+        position: relative;
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 40px 20px;
+      }
+
+      .timeline-item {
+        background: rgba(17, 34, 64, 0.7);
+        border: 1px solid rgba(100, 255, 218, 0.1);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+      }
+
+      .timeline-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(100, 255, 218, 0.1);
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -40px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        background: #64ffda;
+        border-radius: 50%;
+        box-shadow: 0 0 0 5px rgba(100, 255, 218, 0.2);
+      }
+
+      .timeline-date {
+        color: #64ffda;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: inline-block;
+        padding: 5px 15px;
+        background: rgba(100, 255, 218, 0.1);
+        border-radius: 20px;
+      }
+
+      .timeline-item h3 {
+        color: #ccd6f6;
+        margin-bottom: 15px;
+        font-size: 24px;
+      }
+
+      .timeline-item p {
+        color: #8892b0;
+        line-height: 1.6;
+      }
+
+      .join-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin: 60px 0;
+      }
+
+      .join-card {
+        background: rgba(17, 34, 64, 0.7);
+        padding: 40px 30px;
+        border-radius: 15px;
+        text-align: left;
+        border: 1px solid rgba(100, 255, 218, 0.1);
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .join-card-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 20px;
+        color: #64ffda;
+      }
+
+      .join-card h3 {
+        color: #64ffda;
+        margin-bottom: 15px;
+        font-size: 24px;
+      }
+
+      .join-card p {
+        color: #8892b0;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .join-card ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .join-card ul li {
+        color: #8892b0;
+        margin-bottom: 10px;
+        padding-left: 25px;
+        position: relative;
+      }
+
+      .join-card ul li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: #64ffda;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background: transparent;
+        border: 2px solid #64ffda;
+        color: #64ffda;
+        padding: 15px 30px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+      }
+
+      .cta-button:hover {
+        background: rgba(100, 255, 218, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .faq-section {
+        margin-top: 80px;
+      }
+
+      .faq-item {
+        background: rgba(17, 34, 64, 0.7);
+        border: 1px solid rgba(100, 255, 218, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .faq-item:hover {
+        transform: translateX(10px);
+      }
+
+      .faq-question {
+        color: #ccd6f6;
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .faq-answer {
+        color: #8892b0;
+        line-height: 1.6;
+        display: none;
+        padding-top: 10px;
+        border-top: 1px solid rgba(100, 255, 218, 0.1);
+      }
+
+      .faq-item.active .faq-answer {
+        display: block;
+      }
+
+      .contact {
+        max-width: 600px;
+        margin: 0 auto;
+        background: rgba(17, 34, 64, 0.5);
+        padding: 40px;
+        border-radius: 20px;
+        border: 1px solid rgba(100, 255, 218, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        color: #ccd6f6;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        background: rgba(17, 34, 64, 0.5);
+        border: 1px solid rgba(100, 255, 218, 0.2);
+        border-radius: 5px;
+        color: #fff;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #64ffda;
+        box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
+      }
+
+      .form-group textarea {
+        height: 150px;
+        resize: vertical;
+      }
+
+      .submit-btn {
+        background: transparent;
+        border: 2px solid #64ffda;
+        color: #64ffda;
+        padding: 12px 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .submit-btn::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(100, 255, 218, 0.1);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+      }
+
+      .submit-btn:hover::before {
+        width: 300px;
+        height: 300px;
+      }
+
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 48px;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .team {
+          flex-direction: column !important;
+          gap: 30px;
+          padding: 20px;
+        }
+
+        .team-image {
+          height: 300px;
+        }
+
+        .section {
+          padding: 60px 0;
+        }
+
+        .team-details-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="container">
+        <div class="logo">情報工学研究部</div>
+        <div class="nav-links">
+          <a href="#about">About</a>
+          <a href="#teams">Teams</a>
+          <a href="#join">Join Us</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <canvas id="hero-canvas"></canvas>
+      <div class="container">
+        <div class="hero-content">
+          <h1>Create.<br />Innovate.<br />Engineer.</h1>
+          <p>私たちは情報工学研究部です。コンピュータに関する多様な分野・領域で、仲間とともに楽しく活動しています。大会出場をモチベーションに、技術力を高めあっています。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="teams" class="section">
+      <div class="container">
+        <h2>Team</h2>
+        <div class="teams">
+          <div class="team">
+            <div class="team-image">
+              <img src="/api/placeholder/600/400" alt="Web開発チーム" />
+            </div>
+            <div class="team-content">
+              <h3>Web班</h3>
+              <p>最新のウェブ技術を駆使したウェブアプリケーションを開発しています。基礎から学び、Twitterのようなアプリケーションの開発を全員で習得します。そして高専プロコンの課題部門・自由部門、パソコン甲子園のモバイル部門等の大会や高専祭に向けて、仲間と共にアプリケーションを開発します。</p>
+              <div class="team-tech">
+                <span class="tech-tag">HTML/CSS</span>
+                <span class="tech-tag">Vue.js</span>
+                <span class="tech-tag">Javascript/Typescript</span>
+                <span class="tech-tag">Python/FastAPI</span>
+              </div>
+              <div class="team-details">
+                <h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  活動詳細
+                </h4>
+                <div class="team-details-grid">
+                  <div class="detail-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>毎週水曜日 19:00-21:00</span>
+                  </div>
+                  <div class="detail-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>情報工学棟 ML研究室</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="team">
+            <div class="team-image">
+              <img src="/api/placeholder/600/400" alt="ゲーム班" />
+            </div>
+            <div class="team-content">
+              <h3>ゲーム班</h3>
+              <p>UnityやUnreal Engineを用いた本格的なゲーム開発を習得します。基礎から学び、2Dアクションゲームの開発を全員で取得します。そして各自が、高専祭や大会(ゲームクリエイター甲子園等)に向けて、仲間とともに一つのゲーム作品を創りあげます。</p>
+              <div class="team-tech">
+                <span class="tech-tag">Unity</span>
+                <span class="tech-tag">C#</span>
+                <span class="tech-tag">Blender</span>
+              </div>
+              <div class="team-details">
+                <h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  活動詳細
+                </h4>
+                <div class="team-details-grid">
+                  <div class="detail-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>毎週水曜日 19:00-21:00</span>
+                  </div>
+                  <div class="detail-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>情報工学棟 ML研究室</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="team">
+            <div class="team-image">
+              <img src="/api/placeholder/600/400" alt="競技プログラミング班" />
+            </div>
+            <div class="team-content">
+              <h3>競技プログラミング班</h3>
+              <p>アルゴリズムとデータ構造を極め、国内外のプログラミングコンテストで成果を出しています。週間コンテストや勉強会を通じて、問題解決能力を磨いています。</p>
+              <div class="team-tech">
+                <span class="tech-tag">C++</span>
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Algorithms</span>
+                <span class="tech-tag">Data Structures</span>
+                <div class="team-details">
+                  <h4>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    活動詳細
+                  </h4>
+                  <div class="team-details-grid">
+                    <div class="detail-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span>毎週水曜日 19:00-21:00</span>
+                    </div>
+                    <div class="detail-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      <span>情報工学棟 ML研究室</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="team">
+            <div class="team-image">
+              <img src="/api/placeholder/600/400" alt="AI/ML チーム" />
+            </div>
+            <div class="team-content">
+              <h3>AI班</h3>
+              <p>機械学習やディープラーニングを用いて、AI技術の理解・実装に取り組みます。AIの基礎から習得していき、kaggle(オンラインAI開発コンテスト)でより高性能なAIを自分たちだけで創り出せるように取り組んでいきます。最終的にChatGPTやStable Diffusionなどの最先端の深層生成AIを理解を目指します。</p>
+              <div class="team-tech">
+                <span class="tech-tag">PyTorch</span>
+                <span class="tech-tag">Deep Learning</span>
+                <span class="tech-tag">Machine Learning</span>
+                <span class="tech-tag">Computer Vision</span>
+                <span class="tech-tag">NLP</span>
+              </div>
+              <div class="team-details">
+                <h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  活動詳細
+                </h4>
+                <div class="team-details-grid">
+                  <div class="detail-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>毎週水曜日 19:00-21:00</span>
+                  </div>
+                  <div class="detail-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>情報工学棟 ML研究室</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="team">
+            <div class="team-image">
+              <img src="/api/placeholder/600/400" alt="DTMチーム" />
+            </div>
+            <div class="team-content">
+              <h3>DTM班</h3>
+              <p>デジタル技術を活用した音楽制作に取り組んでいます。作曲、編曲、ミックスまで、音楽制作の全工程を学べます。ゲーム用BGMやオリジナル楽曲の制作を行っています。</p>
+              <div class="team-tech">
+                <span class="tech-tag">Logic Pro</span>
+                <span class="tech-tag">Ableton Live</span>
+                <span class="tech-tag">Sound Design</span>
+                <span class="tech-tag">Mixing</span>
+              </div>
+              <div class="team-details">
+                <h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  活動詳細
+                </h4>
+                <div class="team-details-grid">
+                  <div class="detail-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>毎週水曜日 19:00-21:00</span>
+                  </div>
+                  <div class="detail-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>情報工学棟 ML研究室</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="achievements" class="section">
+      <div class="container">
+        <h2>Awards & Achievements</h2>
+        <style>
+          .achievements-list {
+            max-width: 800px;
+            margin: 40px auto;
+          }
+
+          .achievement-item {
+            background: rgba(17, 34, 64, 0.7);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+          }
+
+          .achievement-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(100, 255, 218, 0.1);
+          }
+
+          .achievement-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #64ffda;
+            opacity: 0.7;
+            border-radius: 15px 0 0 15px;
+          }
+
+          .achievement-year {
+            font-family: "JetBrains Mono", monospace;
+            color: #64ffda;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(100, 255, 218, 0.1);
+            border-radius: 12px;
+          }
+
+          .achievement-title {
+            color: #ccd6f6;
+            font-size: 24px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+          }
+
+          .achievement-details {
+            color: #8892b0;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+          }
+
+          .achievement-members {
+            color: #64ffda;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 2px solid rgba(100, 255, 218, 0.3);
+          }
+
+          .achievement-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+          }
+
+          @media (max-width: 768px) {
+            .achievements-list {
+              padding: 0 20px;
+            }
+
+            .achievement-item {
+              padding: 20px;
+            }
+          }
+        </style>
+
+        <div class="achievements-list">
+          <div class="achievement-item">
+            <span class="achievement-year">2022</span>
+            <h3 class="achievement-title">全国高専プログラミングコンテスト第33回群馬大会 競技部門 ５位</h3>
+            <p class="achievement-details">コンピュータによる「かるた」。通常のかるたは1枚ずつ読み上げるが、今大会では複数枚(最大20枚)を同時に読み上げた音声が与えられ、正確に読まれた複数のかるたを計算し、送信する。<br />敗者復活戦から決勝戦へ進出し５位の成績</p>
+            <p class="achievement-members">渡邉航輔(3年)、井上元葵(3年)、加藤優太(1年)</p>
+            <img src="/path/to/procon-image.jpg" alt="高専プロコン" class="achievement-image" />
+          </div>
+
+          <div class="achievement-item">
+            <span class="achievement-year">2024</span>
+            <h3 class="achievement-title">全国高等学校パソコン甲子園 プログラミング部門 本選進出</h3>
+            <p class="achievement-details">全国の高校生および高専生が参加し、競技プログラミングの問題をとくプログラムを作成し、制限時間内により多くの問題を正確に解く。1012名の学生が参加した予選で上位31チーム以内の成績を収め、会津大学での本選に出場。</p>
+            <p class="achievement-members">笠井瑛司(3年)、西村詩太(2年)</p>
+            <img src="/path/to/u22-image.jpg" alt="パソコン甲子園" class="achievement-image" />
+          </div>
+        </div>
+      </div>
+
+      <!-- GSAPアニメーションの追加 -->
+      <script>
+        gsap.from(".achievement-item", {
+          scrollTrigger: {
+            trigger: ".achievements-list",
+            start: "top center+=100",
+          },
+          duration: 0.8,
+          y: 30,
+          opacity: 0,
+          stagger: 0.3,
+          ease: "power3.out",
+        });
+      </script>
+    </section>
+    <!-- <section id="join" class="section join-us">
+      <div class="container">
+        <h2>Join Us</h2>
+        <div class="join-cards">
+          <div class="join-card">
+            <h3>部会</h3>
+            <p>毎週金曜日<br />場所: E科棟情報基礎演習室<br />全部員参加</p>
+          </div>
+          <div class="join-card">
+            <h3>新入生向け体験会</h3>
+            <p>4/4<br />プログラミング体験<br />各チームの活動説明</p>
+          </div>
+          <div class="join-card">
+            <h3>新入生募集</h3>
+            <p>初心者でも、別の学科でも<br />初心者の方こそ歓迎します</p>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
+    <!-- Join Usセクションの新しいHTML -->
+    <section id="join" class="section join-us">
+      <div class="container">
+        <div class="join-section-header">
+          <h2>新入生募集中！</h2>
+          <p>私たちと一緒に活動しませんか？経験は問いません。ちょっとでも興味があれば、誰でも、初心者でも、どの学科でも歓迎です！ぜひ仲間も誘って体験しに来てください！</p>
+        </div>
+
+        <div class="join-timeline">
+          <div class="timeline-item">
+            <span class="timeline-date">4月4日(金)</span>
+            <h3>新歓説明・体験会</h3>
+            <p>各班の活動内容や、プログラミング体験を行います。</p>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-date">4月</span>
+            <h3>体験入部期間</h3>
+            <p>各班の実際の活動に参加して、環境や雰囲気を体験できます。興味のある班に気軽に参加してみましょう。</p>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-date">4月</span>
+            <h3>入部手続き</h3>
+            <p>実際に体験した後、入部を決めることができます。部費は無料です。ぜひ気軽に参加してください！</p>
+          </div>
+        </div>
+
+        <div class="join-cards">
+          <div class="join-card">
+            <svg class="join-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4M12 8h.01" />
+            </svg>
+            <h3>入部について</h3>
+            <ul>
+              <li>部費: 無料</li>
+              <li>全体活動日: 毎週金曜日</li>
+              <li>活動場所: 情報基礎演習室(E科棟3会)</li>
+              <li>必要なもの: ノートPC</li>
+            </ul>
+          </div>
+
+          <div class="join-card">
+            <svg class="join-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+            <h3>活動内容</h3>
+            <ul>
+              <li>班別の定期活動</li>
+              <li>技術勉強会の開催</li>
+              <li>高専祭での成果発表</li>
+              <li>各種大会への出場</li>
+            </ul>
+          </div>
+
+          <div class="join-card">
+            <svg class="join-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <h3>サポート体制</h3>
+            <ul>
+              <li>先輩による技術指導</li>
+              <li>部会での各班、各プロジェクトの成果報告会</li>
+              <li>勉強会・LT会の開催</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-section">
+          <h3 style="text-align: center; margin-bottom: 40px; color: #ccd6f6">よくある質問</h3>
+          <div class="faq-item">
+            <div class="faq-question">
+              プログラミング初心者でも大丈夫ですか？
+              <span class="toggle">+</span>
+            </div>
+            <div class="faq-answer">はい、大歓迎です！基礎から丁寧に教えますので、興味があれば気軽に参加してください。先輩たちも初心者からスタートした人が多くいます。</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              複数の班に所属できますか？
+              <span class="toggle">+</span>
+            </div>
+            <div class="faq-answer">可能です！興味のある分野すべてにチャレンジできます。</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              パソコンは必須ですか？
+              <span class="toggle">+</span>
+            </div>
+            <div class="faq-answer">活動にはノートPCが必要です。入学時に購入したノートPCで問題ありません。</div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px">
+          <a href="#contact" class="cta-button">入部相談・お問い合わせはこちら</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container">
+        <h2>Contact Us</h2>
+        <div class="contact">
+          <form>
+            <div class="form-group">
+              <label for="name">お名前</label>
+              <input type="text" id="name" required />
+            </div>
+            <div class="form-group">
+              <label for="email">メールアドレス</label>
+              <input type="email" id="email" required />
+            </div>
+            <div class="form-group">
+              <label for="message">メッセージ</label>
+              <textarea id="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">送信する</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // GSAPプラグインの登録
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Three.jsの背景アニメーション
+      const canvas = document.getElementById("hero-canvas");
+      const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        alpha: true,
+      });
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+      // レンダラーのサイズ設定
+      const resizeRenderer = () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+      };
+
+      window.addEventListener("resize", resizeRenderer);
+      resizeRenderer();
+
+      // パーティクルの作成
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 1000;
+      const posArray = new Float32Array(particlesCount * 3);
+
+      for (let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 5;
+      }
+
+      particlesGeometry.setAttribute("position", new THREE.BufferAttribute(posArray, 3));
+
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.005,
+        color: "#64ffda",
+      });
+
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+
+      camera.position.z = 3;
+
+      // アニメーション
+      const animate = () => {
+        requestAnimationFrame(animate);
+        particlesMesh.rotation.y += 0.001;
+        particlesMesh.rotation.x += 0.001;
+        renderer.render(scene, camera);
+      };
+
+      animate();
+
+      // スクロールアニメーション
+      gsap.from(".hero-content h1", {
+        duration: 1,
+        y: 30,
+        opacity: 0,
+        delay: 0.2,
+        ease: "power3.out",
+      });
+
+      gsap.from(".hero-content p", {
+        duration: 1,
+        y: 20,
+        opacity: 0,
+        delay: 0.4,
+        ease: "power3.out",
+      });
+
+      // チームセクションのアニメーション
+      gsap.utils.toArray(".team").forEach((team) => {
+        gsap.from(team, {
+          scrollTrigger: {
+            trigger: team,
+            start: "top center+=100",
+            end: "bottom center",
+          },
+          duration: 1,
+          y: 50,
+          opacity: 0,
+          ease: "power3.out",
+        });
+      });
+
+      // Join Usカードのアニメーション
+      gsap.from(".join-card", {
+        scrollTrigger: {
+          trigger: ".join-cards",
+          start: "top center+=100",
+        },
+        duration: 0.8,
+        y: 30,
+        opacity: 0,
+        stagger: 0.2,
+        ease: "power3.out",
+      });
+    </script>
+
+    <!-- GSAPアニメーションの追加 -->
+    <script>
+      // 実績カードのアニメーション
+      gsap.from(".achievement-card", {
+        scrollTrigger: {
+          trigger: ".achievements-grid",
+          start: "top center+=100",
+        },
+        duration: 0.8,
+        y: 30,
+        opacity: 0,
+        stagger: 0.2,
+        ease: "power3.out",
+      });
+
+      // // 論文リストのアニメーション
+      // gsap.from(".publication", {
+      //   scrollTrigger: {
+      //     trigger: ".publication-list",
+      //     start: "top center+=100",
+      //   },
+      //   duration: 0.8,
+      //   x: -30,
+      //   opacity: 0,
+      //   stagger: 0.2,
+      //   ease: "power3.out",
+      // });
+    </script>
+    <script>
+      <!-- FAQのための JavaScript -->
+      document.querySelectorAll(".faq-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          const wasActive = item.classList.contains("active");
+
+          // すべてのFAQを閉じる
+          document.querySelectorAll(".faq-item").forEach((i) => {
+            i.classList.remove("active");
+            i.querySelector(".toggle").textContent = "+";
+          });
+
+          // クリックされたアイテムを開く（既に開いていた場合は閉じたままにする）
+          if (!wasActive) {
+            item.classList.add("active");
+            item.querySelector(".toggle").textContent = "-";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
