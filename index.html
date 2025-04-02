@@ -227,6 +227,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        /* object-fit: contain; */
         transition: transform 0.3s ease;
       }
 
@@ -521,7 +522,6 @@
       .faq-item.active .faq-answer {
         display: block;
       }
-
       .contact {
         max-width: 600px;
         margin: 0 auto;
@@ -532,72 +532,50 @@
         backdrop-filter: blur(10px);
       }
 
-      .form-group {
-        margin-bottom: 20px;
+      .contact-info {
+        display: flex;
+        justify-content: center;
       }
 
-      .form-group label {
-        display: block;
-        margin-bottom: 10px;
-        color: #ccd6f6;
-        font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
       }
 
-      .form-group input,
-      .form-group textarea {
-        width: 100%;
-        padding: 12px;
-        background: rgba(17, 34, 64, 0.5);
-        border: 1px solid rgba(100, 255, 218, 0.2);
-        border-radius: 5px;
-        color: #fff;
-        font-size: 16px;
-        transition: all 0.3s ease;
-      }
-
-      .form-group input:focus,
-      .form-group textarea:focus {
-        outline: none;
-        border-color: #64ffda;
-        box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
-      }
-
-      .form-group textarea {
-        height: 150px;
-        resize: vertical;
-      }
-
-      .submit-btn {
-        background: transparent;
-        border: 2px solid #64ffda;
+      .contact-icon {
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
         color: #64ffda;
-        padding: 12px 30px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: all 0.3s;
-        position: relative;
-        overflow: hidden;
       }
 
-      .submit-btn::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        background: rgba(100, 255, 218, 0.1);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        transition: width 0.6s ease, height 0.6s ease;
+      .contact-text h3 {
+        color: #64ffda;
+        margin-bottom: 15px;
+        font-size: 20px;
       }
 
-      .submit-btn:hover::before {
-        width: 300px;
-        height: 300px;
+      .contact-text p {
+        color: #8892b0;
+        font-size: 18px;
+        line-height: 1.6;
+      }
+
+      .contact-text a {
+        color: #ccd6f6;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .contact-text a:hover {
+        color: #64ffda;
+      }
+
+      .contact-note {
+        font-size: 0.8em;
+        font-style: italic;
+        opacity: 0.7;
       }
 
       @media (max-width: 768px) {
@@ -658,7 +636,7 @@
         <div class="teams">
           <div class="team">
             <div class="team-image">
-              <img src="/api/placeholder/600/400" alt="Web開発チーム" />
+              <img src="image/WEB.png" alt="Web開発チーム" />
             </div>
             <div class="team-content">
               <h3>Web班</h3>
@@ -701,7 +679,7 @@
 
           <div class="team">
             <div class="team-image">
-              <img src="/api/placeholder/600/400" alt="ゲーム班" />
+              <img src="image/ゲーム班.png" style="object-fit: scale-down" alt="ゲーム班" />
             </div>
             <div class="team-content">
               <h3>ゲーム班</h3>
@@ -742,11 +720,11 @@
           </div>
           <div class="team">
             <div class="team-image">
-              <img src="/api/placeholder/600/400" alt="競技プログラミング班" />
+              <img src="image/競プロアイコン.png" alt="競技プログラミング班" />
             </div>
             <div class="team-content">
               <h3>競技プログラミング班</h3>
-              <p>アルゴリズムとデータ構造を極め、国内外のプログラミングコンテストで成果を出しています。週間コンテストや勉強会を通じて、問題解決能力を磨いています。</p>
+              <p>プログラミングを駆使して問題を解く、競技プログラミングに取り組んでいます。 主にパソコン甲子園(PCK)/日本情報オリンピック(JOI)/Atcoder Junior League(AJL)での入賞に向けて活動しています。</p>
               <div class="team-tech">
                 <span class="tech-tag">C++</span>
                 <span class="tech-tag">Python</span>
@@ -785,7 +763,7 @@
 
           <div class="team">
             <div class="team-image">
-              <img src="/api/placeholder/600/400" alt="AI/ML チーム" />
+              <img src="image/AI.png" alt="AI/ML チーム" />
             </div>
             <div class="team-content">
               <h3>AI班</h3>
@@ -813,7 +791,7 @@
                       <circle cx="12" cy="12" r="10"></circle>
                       <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    <span>毎週火曜日</span>
+                    <span>後期から、毎週火曜日</span>
                   </div>
                   <div class="detail-item">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -828,16 +806,22 @@
           </div>
           <div class="team">
             <div class="team-image">
-              <img src="/api/placeholder/600/400" alt="DTMチーム" />
+              <img src="image/DTM.png" alt="DTMチーム" />
             </div>
             <div class="team-content">
               <h3>DTM班</h3>
-              <p>デジタル技術を活用した音楽制作に取り組んでいます。作曲、編曲、ミックスまで、音楽制作の全工程を学べます。ゲーム用BGMやオリジナル楽曲の制作を行っています。</p>
+              <p>
+                パソコンやスマホを用いた音楽制作に取り組んでいます。作曲ソフトの使い方からミキシングまで、音楽制作の各工程を学ぶことができます。作った音楽は、学内行事で展示したり、YouTubeやSoundCloud等の様々なプラットフォームで公開したりすることができます。
+                参加を希望される方は、こちらからDTM班のDiscordサーバーに参加するか、情報工学研究部の部室までお越しください♪
+              </p>
               <div class="team-tech">
-                <span class="tech-tag">Logic Pro</span>
-                <span class="tech-tag">Ableton Live</span>
-                <span class="tech-tag">Sound Design</span>
+                <span class="tech-tag">DTM</span>
+                <span class="tech-tag">Cubase</span>
+                <span class="tech-tag">Studio One</span>
+                <span class="tech-tag">GarageBand</span>
                 <span class="tech-tag">Mixing</span>
+                <span class="tech-tag">VOCALOID</span>
+                <span class="tech-tag">UTAU</span>
               </div>
               <div class="team-details">
                 <h4>
@@ -870,7 +854,7 @@
           </div>
           <div class="team">
             <div class="team-image">
-              <img src="/api/placeholder/600/400" alt="部会" />
+              <img src="image/部会.png" alt="部会" />
             </div>
             <div class="team-content">
               <h3>部会</h3>
@@ -985,7 +969,7 @@
           .achievement-image {
             width: 100%;
             max-height: 400px;
-            object-fit: cover;
+            object-fit: scale-down;
             border-radius: 10px;
             border: 1px solid rgba(100, 255, 218, 0.2);
           }
@@ -1007,7 +991,7 @@
             <h3 class="achievement-title">全国高専プログラミングコンテスト第33回群馬大会 競技部門 ５位</h3>
             <p class="achievement-details">コンピュータによる「かるた」。通常のかるたは1枚ずつ読み上げるが、今大会では複数枚(最大20枚)を同時に読み上げた音声が与えられ、正確に読まれた複数のかるたを計算し、送信する。<br />敗者復活戦から決勝戦へ進出し５位の成績</p>
             <p class="achievement-members">渡邉航輔(3年)、井上元葵(3年)、加藤優太(1年)</p>
-            <img src="/path/to/procon-image.jpg" alt="高専プロコン" class="achievement-image" />
+            <img src="image/高専プロコン2022.jpg" alt="高専プロコン" class="achievement-image" />
           </div>
 
           <div class="achievement-item">
@@ -1015,7 +999,26 @@
             <h3 class="achievement-title">全国高等学校パソコン甲子園 プログラミング部門 本選進出</h3>
             <p class="achievement-details">全国の高校生および高専生が参加し、競技プログラミングの問題をとくプログラムを作成し、制限時間内により多くの問題を正確に解く。1012名の学生が参加した予選で上位31チーム以内の成績を収め、会津大学での本選に出場。</p>
             <p class="achievement-members">笠井瑛司(3年)、西村詩太(2年)</p>
-            <img src="/path/to/u22-image.jpg" alt="パソコン甲子園" class="achievement-image" />
+            <img src="./image/パソコン甲子園2024.png" alt="パソコン甲子園" class="achievement-image" />
+          </div>
+
+          <div class="achievement-item">
+            <span class="achievement-year">2024</span>
+            <h3 class="achievement-title">全国高等学校パソコン甲子園 プログラミング部門 もう一つの本選 ２位</h3>
+            <p class="achievement-details">パソコン甲子園の本選と同日開催されるオンラインの大会。全体で２位の成績を収めました</p>
+            <p class="achievement-members">野田慧太朗(2年)、布谷太一(1年)</p>
+            <img src="./image/パソコン甲子園2024_もう一つの本選.png" alt="パソコン甲子園" class="achievement-image" />
+          </div>
+
+          <div class="achievement-item">
+            <span class="achievement-year">2024</span>
+            <h3 class="achievement-title">Atcoder Junior League 2024 Summer 16位入賞(高校部門 アルゴリズム部門)</h3>
+            <p class="achievement-details">Atcoder(競技プログラミングのオンラインコンテスト)の学校ごとの成績を競うランキング。</p>
+          </div>
+          <div class="achievement-item">
+            <span class="achievement-year">2024</span>
+            <h3 class="achievement-title">Atcoder Junior League 2024 Winter 12位入賞(高校部門 アルゴリズム部門)</h3>
+            <p class="achievement-details">Atcoder(競技プログラミングのオンラインコンテスト)の学校ごとの成績を競うランキング。</p>
           </div>
         </div>
       </div>
@@ -1067,7 +1070,7 @@
           <div class="timeline-item">
             <span class="timeline-date">4月4日(金)</span>
             <h3>新歓説明・体験会</h3>
-            <p>各班の活動内容や、プログラミング体験を行います。</p>
+            <p>各班の活動内容紹介や、プログラミング体験を行います。</p>
           </div>
 
           <div class="timeline-item">
@@ -1093,7 +1096,6 @@
             <ul>
               <li>部費: 無料</li>
               <li>全体活動日: 毎週金曜日 部会</li>
-              <li>活動時間: 基本４限目終了後、ただし早く部屋に来ても各自の活動も可能</li>
               <li>活動場所: 情報基礎演習室(E科棟3階)</li>
               <li>必要なもの: ノートPC</li>
             </ul>
@@ -1105,9 +1107,9 @@
             </svg>
             <h3>活動内容</h3>
             <ul>
-              <li>班別の定期活動</li>
-              <li>技術勉強会の開催</li>
-              <li>高専祭での成果発表</li>
+              <li>班別の活動</li>
+              <li>部会での交流</li>
+              <li>高専祭での作品発表</li>
               <li>各種大会への出場</li>
             </ul>
           </div>
@@ -1164,25 +1166,24 @@
       <div class="container">
         <h2>Contact Us</h2>
         <div class="contact">
-          <form>
-            <div class="form-group">
-              <label for="name">お名前</label>
-              <input type="text" id="name" required />
+          <div class="contact-info">
+            <div class="contact-item">
+              <div class="contact-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </div>
+              <div class="contact-text">
+                <h3>メールでのお問い合わせ</h3>
+                <p><a href="mailto:jyoken_bucho@example.com">e2210@s.akashi.ac.jp</a></p>
+                <p class="contact-note">部長の加藤へのメールアドレスです。質問などなんでも気軽にご連絡ください。</p>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="email">メールアドレス</label>
-              <input type="email" id="email" required />
-            </div>
-            <div class="form-group">
-              <label for="message">メッセージ</label>
-              <textarea id="message" required></textarea>
-            </div>
-            <button type="submit" class="submit-btn">送信する</button>
-          </form>
+          </div>
         </div>
       </div>
     </section>
-
     <script>
       // GSAPプラグインの登録
       gsap.registerPlugin(ScrollTrigger);
